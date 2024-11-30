@@ -1,14 +1,14 @@
 package com.hmsapp.controller;
 
 import com.hmsapp.entity.User;
+import com.hmsapp.payload.LoginDto;
 import com.hmsapp.repository.UserRepository;
+import com.hmsapp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -16,9 +16,11 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class AuthController {
     private UserRepository userRepository;
+    private UserService userService;
 
-    public AuthController(UserRepository userRepository){
+    public AuthController(UserRepository userRepository, UserService userService){
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/sign-up")
@@ -40,9 +42,21 @@ public class AuthController {
             return new ResponseEntity("Mobile alerdly exist ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10)));
+
         User savedUser = userRepository.save(user);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginDto loginDto){
+        boolean val = userService.verifyLogin(loginDto);
+        if (val){
+            return "logrd in";
+        }
+
+        return "Invalid username/password";
     }
 
 }
