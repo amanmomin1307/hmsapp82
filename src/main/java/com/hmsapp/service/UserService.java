@@ -11,22 +11,26 @@ import java.util.Optional;
 @Service
 public class UserService {
     private UserRepository userRepository;
+    private JWTService jwtService;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, JWTService jwtService){
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
-    public boolean verifyLogin (LoginDto loginDto){
+    public String verifyLogin (LoginDto loginDto){
         Optional<User> opUser = userRepository.findByUsername(loginDto.getUsername());
+
         if(opUser.isPresent()){
             User user = opUser.get();
             if(BCrypt.checkpw(loginDto.getPassword(), user.getPassword())){
-                return true;
+                String token = jwtService.generateToken(user.getUsername());
+                return token;
             }else {
-                return false;
+                return null;
             }
         }
 
-        return false;
+        return null;
     }
 }
