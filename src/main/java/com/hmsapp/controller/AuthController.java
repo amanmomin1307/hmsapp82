@@ -1,6 +1,7 @@
 package com.hmsapp.controller;
 
 import com.hmsapp.entity.User;
+import com.hmsapp.payload.JwtToken;
 import com.hmsapp.payload.LoginDto;
 import com.hmsapp.repository.UserRepository;
 import com.hmsapp.service.UserService;
@@ -52,8 +53,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
         String token = userService.verifyLogin(loginDto);
+
+        JwtToken jwttoken = new JwtToken();
+        jwttoken.setToken(token);
+        jwttoken.setType("JWT");
+
         if (token != null){
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            return new ResponseEntity<>(jwttoken, HttpStatus.OK);
         }
 
         return new ResponseEntity<>("Invalid", HttpStatus.INTERNAL_SERVER_ERROR);
