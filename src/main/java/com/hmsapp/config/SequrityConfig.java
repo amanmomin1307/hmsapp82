@@ -25,8 +25,16 @@ public class SequrityConfig {
             http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable());
             http.addFilterBefore(jwtFilter, AuthorizationFilter.class);   //WHITHOUT TOKEN REQUESTS I WILL NOT FILTER
             //haap
-            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            //http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
-            return http.build();
+            http.securityMatcher("/api/auth/sign-in", "/api/auth/login", "/api/v1/property/addProperty")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/sign-in", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/v1/property/addProperty").hasRole("PROPERTY_OWNER")
+                        .anyRequest().authenticated()
+                );
+
+
+        return http.build();
     }
 }
