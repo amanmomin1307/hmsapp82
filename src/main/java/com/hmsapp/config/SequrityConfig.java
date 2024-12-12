@@ -27,13 +27,13 @@ public class SequrityConfig {
             //haap
             //http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
-            http.securityMatcher("/api/auth/sign-in", "/api/auth/login", "/api/v1/property/addProperty")
+            http.securityMatcher("/api/auth/sign-up", "/api/auth/login", "/api/v1/property/addProperty")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/sign-in", "/api/auth/login").permitAll()
-                        .requestMatchers("/api/v1/property/addProperty").hasRole("PROPERTY_OWNER")
+                        .requestMatchers("/api/auth/sign-up", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/v1/property/addProperty").hasRole("OWNER")
+                        .requestMatchers("api/v1/property/deleteProperty").hasAnyRole("OWNER","ADMIN")
                         .anyRequest().authenticated()
                 );
-
 
         return http.build();
     }
