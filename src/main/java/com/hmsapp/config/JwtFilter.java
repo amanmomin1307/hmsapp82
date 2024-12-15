@@ -37,7 +37,8 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println(token);
 
         if(token!=null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7 , token.length()-1);
+            String jwtToken = token.substring(7 );
+            System.out.println(jwtToken);
 
             String username = jwtService.getUsername(jwtToken);
 
@@ -46,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (opUsername.isPresent()) {
                 User user = opUsername.get();
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, Collections.singleton(new SimpleGrantedAuthority(user.getRole() )));
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, Collections.singleton(new SimpleGrantedAuthority(user.getRole())));
 
                 authenticationToken.setDetails(new WebAuthenticationDetails(request));
 

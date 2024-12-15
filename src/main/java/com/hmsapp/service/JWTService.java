@@ -23,14 +23,24 @@ public class JWTService {
 
     private Algorithm algorithm;
 
+//    @PostConstruct
+//    public void postConstruct() throws UnsupportedEncodingException {
+//        algorithm = Algorithm.HMAC256(algorithmKey);
+//    }
+
     @PostConstruct
     public void postConstruct() throws UnsupportedEncodingException {
+        if (algorithmKey == null || algorithmKey.isEmpty()) {
+            throw new IllegalStateException("Algorithm key is not initialized!");
+        }
         algorithm = Algorithm.HMAC256(algorithmKey);
     }
+
 
     public String generateToken(String username){
         return JWT.create()
                 .withClaim("name", username)
+                .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis()+expiry))
                 .withIssuer(issuer)
                 .sign(algorithm);

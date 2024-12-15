@@ -29,9 +29,10 @@ public class SequrityConfig {
 
             http.securityMatcher("/api/auth/sign-up", "/api/auth/login", "/api/v1/property/addProperty")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/sign-up", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/sign-up", "/api/auth/login","api/v1/property/India").permitAll()
                         .requestMatchers("/api/v1/property/addProperty").hasRole("OWNER")
                         .requestMatchers("api/v1/property/deleteProperty").hasAnyRole("OWNER","ADMIN")
+                        .requestMatchers("/auth/blog/sign-up").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
 

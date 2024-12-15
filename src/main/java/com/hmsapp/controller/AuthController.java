@@ -1,14 +1,15 @@
 package com.hmsapp.controller;
 
+//import com.hmsapp.entity.Role;
 import com.hmsapp.entity.User;
 import com.hmsapp.payload.JwtToken;
 import com.hmsapp.payload.LoginDto;
 import com.hmsapp.repository.UserRepository;
 import com.hmsapp.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class AuthController {
 
         user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10)));
         user.setRole("ROLL_USER");
+        //user.setRole("USER");
         User savedUser = userRepository.save(user);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
@@ -82,7 +84,7 @@ public class AuthController {
 
     //USED FOR CONTENT WRITER SIGN UP
     @PostMapping("/blog/sign-up")
-    public ResponseEntity<?> createBlogManager(
+    public ResponseEntity<?> createBlogManager( @Validated
             @RequestBody User user
     ){
         Optional<User> opUsername = userRepository.findByUsername(user.getUsername());
@@ -101,7 +103,7 @@ public class AuthController {
         }
 
         user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(10)));
-        user.setRole("ROLL_CONTENTWRITER");
+        user.setRole("ROLL_BLOGMANAGER");
         User savedUser = userRepository.save(user);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
