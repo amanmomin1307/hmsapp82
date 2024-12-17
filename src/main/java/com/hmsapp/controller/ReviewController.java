@@ -33,10 +33,15 @@ public class ReviewController {
             @AuthenticationPrincipal User user
     ){
         Property property = propertyRepository.findById(propertyId).get();
-        reviews.setProperty(property);
-        reviews.setUser(user);
-        reviewsRepository.save(reviews);
-        return "Added";
+
+        Reviews reviewsStatus = reviewsRepository.findByPropertyAndUser(property,user);
+
+        if(reviewsStatus!=null) {
+            reviews.setProperty(property);
+            reviews.setUser(user);
+            reviewsRepository.save(reviews);
+        }
+        return "Review alerdly given";
     }
 
     @GetMapping("user/reviews")
