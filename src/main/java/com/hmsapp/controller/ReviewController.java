@@ -7,7 +7,6 @@ import com.hmsapp.payload.ProfileDto;
 import com.hmsapp.repository.PropertyRepository;
 import com.hmsapp.repository.ReviewsRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
