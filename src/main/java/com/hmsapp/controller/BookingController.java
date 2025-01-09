@@ -7,6 +7,7 @@ import com.hmsapp.repository.BookingRepository;
 import com.hmsapp.repository.PropertyRepository;
 import com.hmsapp.repository.RoomAvailabilityRepository;
 import com.hmsapp.service.PDFGenerator;
+import com.hmsapp.service.TwilioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,14 @@ public class BookingController {
 
     private PDFGenerator pdfGenerator;
 
-    public BookingController(RoomAvailabilityRepository roomAvailabilityRepository, PropertyRepository propertyRepository, BookingRepository bookingRepository, PDFGenerator pdfGenerator) {
+    private TwilioService twilioService;
+
+    public BookingController(RoomAvailabilityRepository roomAvailabilityRepository, PropertyRepository propertyRepository, BookingRepository bookingRepository, PDFGenerator pdfGenerator, TwilioService twilioService) {
         this.roomAvailabilityRepository = roomAvailabilityRepository;
         this.propertyRepository = propertyRepository;
         this.bookingRepository = bookingRepository;
         this.pdfGenerator = pdfGenerator;
+        this.twilioService = twilioService;
     }
 
     @GetMapping("/search/rooms")
@@ -56,6 +60,8 @@ public class BookingController {
         Booking savedBookingDetails = bookingRepository.save(bookings);
 
         pdfGenerator.generatePdf("D:\\GenaratedPDF\\bookings"+"_"+savedBookingDetails.getId()+".pdf",savedBookingDetails,fromDate,toDate,property);
+
+        twilioService.sendSms("+919637742012","test");
 
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
