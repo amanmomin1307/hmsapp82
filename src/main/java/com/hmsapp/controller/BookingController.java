@@ -61,7 +61,7 @@ public class BookingController {
 
         pdfGenerator.generatePdf("D:\\GenaratedPDF\\bookings"+"_"+savedBookingDetails.getId()+".pdf",savedBookingDetails,fromDate,toDate,property);
 
-        twilioService.sendSms("+919637742012","test");
+        twilioService.sendSms("+919637742012"," bhai kese ho?");
 
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
