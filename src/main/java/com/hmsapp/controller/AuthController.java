@@ -5,6 +5,7 @@ import com.hmsapp.entity.User;
 import com.hmsapp.payload.JwtToken;
 import com.hmsapp.payload.LoginDto;
 import com.hmsapp.repository.UserRepository;
+import com.hmsapp.service.OTPService;
 import com.hmsapp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,12 @@ import java.util.Optional;
 public class AuthController {
     private UserRepository userRepository;
     private UserService userService;
+    private OTPService otpService;
 
-    public AuthController(UserRepository userRepository, UserService userService){
+    public AuthController(UserRepository userRepository, UserService userService, OTPService otpService){
         this.userRepository = userRepository;
         this.userService = userService;
+        this.otpService = otpService;
     }
 
     //USED FOR USER SIGN UP
@@ -123,6 +126,27 @@ public class AuthController {
         }
 
         return new ResponseEntity<>("Invalid", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @PostMapping("/login-otp")
+    public ResponseEntity<?> loginWithOtp(@RequestParam String mobile){
+        String otp = otpService.generateOtp(mobile);
+
+
+        if (otp != null){
+            return new ResponseEntity<>(otp, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Invalid", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping ("/verify-otp")
+    public boolean verifyOtp (
+            @RequestParam String mobile,
+            @RequestParam String otp
+    ){
+        return otpService.validateOTP(mobile, otp);
     }
 
 }
